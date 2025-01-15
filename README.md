@@ -1,14 +1,9 @@
 
 # ordib
 
-Ordib - Lightweight State Management for React. Ordib comes from Ordibehesh which is second month of persian calendar. Ordibehesht means truth and it's Ordib goal
-
-================================================
-
-  
-
 **Ordib** is a lightweight, flexible, and highly performant state management library for React applications. Designed with simplicity and scalability in mind, it supports modern features such as middleware, selectors, immutability, and modular state stores.
 
+Ordib comes from Ordibehesh which is second month of persian calendar. Ordibehesht means truth and it's Ordib goal
   
 
 **Features**
