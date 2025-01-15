@@ -1,0 +1,32 @@
+{
+    "release-type": "node",
+    "packages": {
+        ".": {
+            "package-name": "ordib",
+            "release-type": "node"
+        }
+    },
+    "bump-minor-pre-major": true,
+    "changelog-sections": [
+        {
+            "type": "feat",
+            "section": "Features"
+        },
+        {
+            "type": "fix",
+            "section": "Bug Fixes"
+        },
+        {
+            "type": "docs",
+            "section": "Documentation"
+        },
+        {
+            "type": "chore",
+            "section": "Chores"
+        },
+        {
+            "type": "test",
+            "section": "Tests"
+        }
+    ]
+}

@@ -1,0 +1,44 @@
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+name: release-please
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout code
+      - uses: actions/checkout@v4
+
+      # Step 2: Run release-please
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: node
+          manifest-file: .release-please-manifest.json
+        if: github.head_ref != 'release-please--branches--master'
+
+      # Step 3: Setup node if a release is created
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          registry-url: 'https://registry.npmjs.org'
+        if: github.head_ref == 'release-please--branches--master'
+
+      # Step 4: Install Packages if a release is created
+      - name: Install dependencies
+        run: npm ci
+        if: github.head_ref == 'release-please--branches--master'
+
+      # Step 5: Publish package if a release is created
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: github.head_ref == 'release-please--branches--master'
