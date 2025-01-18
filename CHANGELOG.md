@@ -1,3 +1,12 @@
+## [1.0.3](https://github.com/A-Kasaaian/Ordib/compare/v1.0.1...v1.0.3) (2025-01-18)
+
+
+### Bug Fixes
+
+* publish commands and resolving sourcemap warnings ([fddf4ff](https://github.com/A-Kasaaian/Ordib/commit/fddf4ffbec55218e23ece1802ee3228d14128a9d))
+
+
+
 ## [1.0.1](https://github.com/A-Kasaaian/Ordib/compare/v1.0.0...v1.0.1) (2025-01-18)
 
 
