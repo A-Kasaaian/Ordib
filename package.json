@@ -1,6 +1,6 @@
 {
   "name": "ordib",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Ordib is a lightweight and flexible state management for React with middleware and immutability.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,9 +8,9 @@
     "dist"
   ],
   "scripts": {
-    "prebuild": "rm -rf dist && yarn remove react react-dom @types/react-dom",
-    "build": "tsc",
-    "postbuild": "yarn add -D react@^18.2.0 react-dom@^18.2.0 @types/react-dom@^18.0.11 --ignore-scripts",
+    "prebuild": "rm -rf dist",
+    "build": "tsc --sourceMap false",
+    "build:dev": "tsc",
     "prepare": "yarn build",
     "test": "jest",
     "lint": "eslint",
@@ -34,7 +34,8 @@
   "author": "Alireza Kasaaian",
   "license": "MIT",
   "peerDependencies": {
-    "@types/react": ">=17.0.0"
+    "@types/react": ">=17.0.0",
+    "react": ">=17.0.0"
   },
   "dependencies": {
     "lodash.isequal": "^4.5.0"
