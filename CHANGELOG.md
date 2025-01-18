@@ -1,3 +1,12 @@
+## [1.0.1](https://github.com/A-Kasaaian/Ordib/compare/v1.0.0...v1.0.1) (2025-01-18)
+
+
+### Features
+
+* types added to bundle, tests corrected, and updater fixed ([16e1484](https://github.com/A-Kasaaian/Ordib/commit/16e148440d52a77447342b92ffac3f2790dd3de5))
+
+
+
 # 1.0.0 (2025-01-15)
 
 

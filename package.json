@@ -1,6 +1,6 @@
 {
   "name": "ordib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Ordib is a lightweight and flexible state management for React with middleware and immutability.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
