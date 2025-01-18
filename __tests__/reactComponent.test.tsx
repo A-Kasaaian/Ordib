@@ -30,7 +30,7 @@ it('does not re-render when unrelated state part updates', async () => {
     </>)
 
   act(() => {
-    result.current.updateState({ count: 1 })
+    result.current.updateState({ ...result.current.state, count: 1 })
   })
 
   await waitFor(() => expect(screen.getByTestId('count').textContent).toBe('1'))
@@ -56,16 +56,16 @@ it('re-renders when subscribed state part updates', async () => {
   render(<DisplayAge />)
 
   act(() => {
-    result.current.updateState((prevState) => ({
-        ...prevState,
+    result.current.updateState({
+        ...result.current.state,
         user: {
-            ...prevState.user,
+            ...result.current.state.user,
             details: {
-            ...prevState.user.details,
-            age: prevState.user.details.age + 1,
+            ...result.current.state.user.details,
+            age: result.current.state.user.details.age + 1,
             },
         },
-    }))
+    })
   })
 
   await waitFor(() => expect(screen.getByTestId('age').textContent).toBe('31'))
