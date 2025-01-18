@@ -48,7 +48,7 @@ describe('useSharedStore', () => {
     const { result } = renderHook(() => useNestedStore())
 
     act(() => {
-      result.current.updateState((state) => ({ user: { ...state.user, details: { age: 31 } } }))
+      result.current.updateState({ user: { ...result.current.state.user, details: { age: 31 } } })
     })
 
     await waitFor(() => { expect(result.current.state).toEqual({ user: { name: 'Alice', details: { age: 31 } } }) })

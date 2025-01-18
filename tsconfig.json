@@ -2,8 +2,9 @@
   "compilerOptions": {
     /* Basic Options */
     "target": "ES5",
-    "module": "CommonJS",
+    "module": "ESNext",
     "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -12,6 +13,8 @@
     /* Output Options */
     "outDir": "./dist",
     "rootDir": "./src",
+    "declaration": true,
+    "declarationDir": "./dist",
 
     /* Module Resolution */
     "moduleResolution": "node",
@@ -20,6 +23,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
+    "sourceMap": true,
 
     /* Type Checking */
     "noImplicitAny": true,
@@ -30,7 +34,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests"],
+  "exclude": ["node_modules", "dist", "__tests__"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   }

@@ -1,385 +1,321 @@
-
 # ordib
 
 **Ordib** is a lightweight, flexible, and highly performant state management library for React applications. Designed with simplicity and scalability in mind, it supports modern features such as middleware, selectors, immutability, and modular state stores.
 
 Ordib comes from Ordibehesh which is second month of persian calendar. Ordibehesht means truth and it's Ordib goal
-  
 
-**Features**
+## Features
 
-------------
+- **Lightweight**: Minimal API, easy setup, and fast performance.
+- **Middleware Support**: Add logging, validation, or async workflows.
+- **Selectors**: Subscribe to specific parts of the state to optimize rendering.
+- **Immutability**: Built-in support for immutable state updates.
+- **Persistence**: Save and restore state with optional persistence utilities.
+- **Modularity**: Create multiple independent stores for scoped state management.
+- **TypeScript Support**: Strong type safety for state, middleware, and selectors.
 
-  
+## Getting Started
 
--  **Lightweight**: Minimal API, easy setup, and fast performance.
+### Installation
 
--  **Middleware Support**: Add logging, validation, or async workflows.
+To install Ordib, run the following command:
 
--  **Selectors**: Subscribe to specific parts of the state to optimize rendering.
-
--  **Immutability**: Built-in support for immutable state updates.
-
--  **Persistence**: Save and restore state with optional persistence utilities.
-
--  **Modularity**: Create multiple independent stores for scoped state management.
-
--  **TypeScript Support**: Strong type safety for state, middleware, and selectors.
-
-  
-
-**Installation**
-
-----------------
-
-  
-
-Add Ordib to your project:
-
-  
-
-```bash
-
-yarn  add  ordib
-
+```sh
+npm install ordib
 ```
 
-  
+### Basic Usage
 
-**Getting Started**
+#### Creating a Simple Store
 
--------------------
+First, create a simple store using `createSharedStore`:
 
-  
+```tsx
+import { createSharedStore } from 'ordib'
 
-### 1\. Create a Shared Store
-
-  
-
-A shared store manages the global or feature-specific state:
-
-  
-
-```
-import { createSharedStore } from "ordib"
-
-interface CounterState { count: number }
-
-export const useCounterStore = createSharedStore({ count: 0 })
-```
-
-  
-
-### 2\. Use the Store in Components
-
-  
-
-Access and update the state using the useCounterStore hook in your components.
-
-  
-
-#### Update the State:
-
-  
-
-```
-import React, { useEffect } from "react"
-import { useCounterStore } from "./stores/counterStore"
-
-const CounterComponent: React.FC = () => {
-	const { state, updateState } = useCounterStore()
-
-	useEffect(() => {
-		setInterval(() => updateState(state => state.count + 1), 1000)
-	}, [])
-
-	return <div > {state.count} </div>
+interface AppState {
+  count: number
 }
 
-export default CounterComponent
+const initState = { count: 0 }
+const useAppStore = createSharedStore<AppState>(initStore)
+
+export useAppStore
 ```
 
-  
+#### Using the Store in a Component
 
-### 3\. Optimize Performance with Selectors
+Next, import the store into a component and use it to manage state:
 
-  
+```tsx
+import React from 'react'
+import { useAppStore } from './path/to/store'
 
-Subscribe to only part of the state using a selector to avoid unnecessary re-renders:
+const Counter: React.FC = () => {
+  const { state, updateState } = useAppStore()
 
-  
-
-```
-import React from "react"
-import { createSharedStore } from "ordib"
-
-import { useCounterStore } from "./stores/counterStore"
-
-interface UserState { name: string, details: { age: number } }
-
-const useUserStore = createSharedStore({ name: 'Bob', details: { age: 30 } })
-
-const UserNameDisplay: React.FC = () => {
-	const { state: name } = useUserStore((state) => state.name)
-
-	return <div> {name} </div>
+  return (
+    <div>
+      <p>Count: {state.count}</p>
+      <button onClick={() => { updateState({ count: state.count + 1 }) }} >
+        Increment
+      </button>
+    </div>
+  )
 }
 
-export default UserNameDisplay
+export default Counter
 ```
-
-In the above example the component won't re-render if any part of the state other than name gets updated.
-
-### 4\. Use Middleware
-
-  
-
-Middleware lets you intercept state updates for logging, validation, or async workflows.
-
-  
-
-#### Add Middleware:
-
-  
-
-```
-import { createSharedStore } from "ordib"
-import { Middleware } from "ordib"
-
-interface CounterState { count: number }
-
-const loggingMiddleware: Middleware = (currentState, nextState, next) => {
-	console.log("Previous State:", currentState)
-	console.log("Next State:", nextState)
-	next(nextState) // Proceed with the update
-}
-
-export const useCounterStore = createSharedStore( { count: 0 }, { middlewares: [loggingMiddleware] } ) 
-```
-
-  
-
-### 5\. Persist State
-
-  
-
-Save and restore state to/from localStorage or other storage mechanisms.
-
-  
-
-#### Enable Persistence:
-
-  
-
-```
-import { createSharedStore } from "ordib"
-
-interface CounterState { count: number }
-
-export const useCounterStore = createSharedStore({ count: 0 }, { persistenceOptions: { persistKey: "counterState" } } ) 
-```
-
-  
-
-### 6\. Modular State Management
-
-  
-
-You can create multiple independent stores for different application features.
-
-  
-
-#### Example:
-
-  
-
-```
-import { createSharedStore } from "ordib"
-
-interface UserState { name: string }
-interface ThemeState { darkMode: boolean }
-
-export const useUserStore = createSharedStore({ name: "Guest", })
-
-export const useThemeStore = createSharedStore({ darkMode: false, }) 
-```
-
-  
-
-### 7\. Share State Between Components
-
-  
-
-Multiple components can share the same state seamlessly.
-
-  
-
-#### Example:
-
-  
-
-```
-import React from "react"
-import { createSharedStore } from "ordib"
-
-interface CounterState { count: number }
-
-export const useCounterStore = createSharedStore({ count: 0 })
-
-const IncrementButton: React.FC = () => {
-	const { updateState, state } = useCounterStore()
-	return <button onClick={() => updateState({ count: state.count + 1 })}>Increment</button>
-}
-
-const CountDisplay: React.FC = () => {
-	const { state: count } = useCounterStore((state) => state.count)
-	return <div>Count: {count}</div>
-}
-
-const App: React.FC = () => (
-	<>
-		<CountDisplay />
-		<IncrementButton />
-	</>
-)
-```
-
-  
-
-**Advanced Features**
-
----------------------
-
-  
 
 ### Nested State Updates
 
-  
+Ordib supports nested state updates seamlessly via `updateState` with partial updates.
 
-Ordib supports nested state updates seamlessly via updateState with partial updates:
+#### Creating a Store with Nested State
 
-  
+Create a store with nested state:
 
+```tsx
+import { createSharedStore } from 'ordib'
+
+interface UserState {
+  name: string
+  details: {
+    age: number
+    address: string
+  }
+}
+
+const initState = {
+  name: 'Alice',
+  details: {
+    age: 30,
+    address: '123 Street'
+  }
+}
+
+const useUserStore = createSharedStore<UserState>(initState)
+
+export useUserStore
 ```
-import { createScopedStore } from "ordib";
 
-interface ScopedState { loggedIn: boolean; }
+#### Using the Nested State Store in a Component
 
-export const useAuthStore = createScopedStore("auth", { loggedIn: false, });
+Import the nested state store into a component and update nested state:
+
+```tsx
+import React from 'react'
+import { useUserStore } from './path/to/store'
+
+const UserComponent: React.FC = () => {
+  const { state, updateState } = useUserStore()
+
+  const updateAge = () => {
+    updateState({
+        ...state,
+        details: {
+            ...state.details,
+            age: state.details.age + 1
+        }
+    })
+  }
+
+  return (
+    <div>
+      <p>Name: {state.name}</p>
+      <p>Age: {state.details.age}</p>
+      <p>Address: {state.details.address}</p>
+      <button onClick={updateAge}>Increase Age</button>
+    </div>
+  )
+}
+
+export default UserComponent
 ```
 
-  
+### Optimize Performance with Selectors
 
-**API Reference**
+Selectors allow you to subscribe to only part of the state to avoid unnecessary re-renders.
 
------------------
+#### Using Selectors to Scope Updates
 
-  
+Import the nested state store and add a selector to scope updates:
 
-### createSharedStore(initialState, options?)
+```tsx
+import React from 'react'
+import { createSharedStore } from 'ordib'
 
-  
+interface AppState {
+  count: number
+  name: string
+}
 
-*  **Description**: Creates a shared store with optional middleware and persistence options.
+const initStore = { count: 0, name: 'Ordib' }
 
-*  **Parameters**:
+const useAppStore = createSharedStore<AppState>(initStore)
 
-* initialState - The initial state of the store.
+const CountDisplay: React.FC = () => {
+  const { state } = useAppStore((state) => state.count)
 
-* options - Configuration options for middlewares and persistence.
+  return <div>Count: {state}</div>
+}
 
-  
+const NameDisplay: React.FC = () => {
+  const { state } = useAppStore((state) => state.name)
 
-### updateState(updater: Partial)
+  return <div>Name: {state}</div>
+}
 
-  
+const App: React.FC = () => (
+  <div>
+    <CountDisplay />
+    <NameDisplay />
+  </div>
+)
 
-*  **Description**: Updates the state immutably.
+export default App
+```
 
-*  **Parameters**:
+## API Reference
 
-* updater - Partial object to merge into the state.
+### `createSharedStore`
 
-  
+- **Description**: Creates a shared store with optional middleware and persistence options.
+- **Parameters**:
+  - `initialState` - The initial state of the store.
+  - `options` - Configuration options for middlewares and persistence.
+    - `middlewares` - An array of middleware functions.
+    - `persistenceOptions` - Options for state persistence.
+      - `persistKey` - The key used to persist the state.
+      - `storage` - The storage mechanism (default is `localStorage`).
 
-### Middleware Signature
+### `useSharedStore`
 
-  
+- **Description**: Hook to access and update the shared store state.
+- **Parameters**:
+  - `selector` - A function to select a part of the state (default is the entire state).
+- **Returns**:
+  - `state` - The selected state.
+  - `updateState` - Function to update the state.
 
-` (currentState: State, nextState: State, next: (state: State) => void) => void; `
+### `useBaseStore`
 
-  
+- **Description**: Creates a base store with optional middleware.
+- **Parameters**:
+  - `initialState` - The initial state of the store.
+  - `middlewares` - An array of middleware functions.
+- **Returns**:
+  - `state` - The current state.
+  - `updateState` - Function to update the state.
+  - `subscribe` - Function to subscribe to state changes.
 
-**FAQ**
+## Advanced Features
 
--------
+### Middleware
 
-  
+Ordib supports middleware for logging, validation, or async workflows:
 
-### Q: Does Ordib support TypeScript?
+```tsx
+import { createSharedStore } from 'ordib'
 
-  
+const loggerMiddleware = (store) => (next) => (action) => {
+  console.log('dispatching', action)
+  let result = next(action)
+  console.log('next state', store.getState())
+  return result
+}
 
-Yes, Ordib is fully type-safe with TypeScript support.
+const useAppStore = createSharedStore({ count: 0 }, { middlewares: [loggerMiddleware] })
 
-  
+export useAppStore
+```
 
-### Q: Can I use multiple stores in the same app?
+### Persistence
 
-  
+Persist and restore state with optional persistence utilities:
 
-Absolutely! You can create as many independent stores as needed.
+```tsx
+import { createSharedStore } from 'ordib'
 
-  
+const useAppStore = createSharedStore(
+  { count: 0 },
+  {
+    persistenceOptions: {
+      persistKey: 'appState',
+      storage: sessionStorage // Storage is optional. Default is localStorage.
+    }
+  }
+)
 
-### Q: How is Ordib different from Redux or Zustand?
+export useAppStore
+```
 
-  
+## FAQ
 
-*  **Simpler API**: No reducers, actions, or complex boilerplate.
+### How do I reset the state?
 
-*  **Built-in Middleware**: Easily add logging, validation, or async logic.
+You can reset the state by calling `updateState` with the initial state:
 
-*  **Selectors**: Optimized rendering by subscribing to specific state slices.
+```tsx
+const resetState = () => {
+  updateState({ count: 0 })
+}
+```
 
-  
+### Can I use Ordib with TypeScript?
 
-**Contributing**
+Yes, Ordib has strong TypeScript support for state, middleware, and selectors.
 
-----------------
+### How do I subscribe to state changes?
 
-  
+You can subscribe to state changes using the `subscribe` function returned by `useBaseStore`:
 
-We welcome contributions! Feel free to fork the repository, make changes, and submit a pull request.
+```tsx
+const { subscribe } = useAppStore()
+subscribe((newState) => {
+  console.log('State changed:', newState)
+})
+```
 
-  
+### How do I use multiple stores?
 
-1. Fork the repo.
+You can create multiple independent stores for scoped state management:
 
-2. git checkout -b feature/new-feature
+```tsx
+const useUserStore = createSharedStore({ name: 'Alice' })
+const useSettingsStore = createSharedStore({ theme: 'dark' })
+```
 
-3. Commit changes and open a pull request.
+### How do I persist state across sessions?
 
-  
+You can use the `persistenceOptions` parameter in `createSharedStore` to persist state across sessions:
 
-**License**
+```tsx
+const initState = { count: 0 }
+const useAppStore = createSharedStore(
+  initState,
+  {
+    persistenceOptions: {
+      persistKey: 'appState',
+      storage: localStorage
+    }
+  }
+)
+```
 
------------
+## Contributing
 
-  
+We welcome contributions! Please follow these steps:
 
-Ordib is licensed under the [MIT License](https://chatgpt.com/c/LICENSE).
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes.
+4. Commit your changes (`git commit -m 'Add new feature'`).
+5. Push to the branch (`git push origin feature-branch`).
+6. Open a pull request.
 
-  
+## License
 
-**Acknowledgments**
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
--------------------
-
-  
-
-Inspired by modern React state management patterns and ancient Persian mythology, Ordib aims to deliver wisdom, simplicity, and unity to your React applications.
-
-  
-
-🎉 Happy coding with **Ordib**! 🚀
+🎉 Happy coding with Ordib! 🚀

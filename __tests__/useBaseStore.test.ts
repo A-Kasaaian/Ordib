@@ -38,7 +38,7 @@ describe('useBaseStore', () => {
     const { result } = renderHook(() => useBaseStore({ count: 0 }))
 
     act(() => {
-      result.current.updateState((prevState) => ({ count: prevState.count + 5 }))
+      result.current.updateState({ count: result.current.state.count + 5 })
     })
 
     await waitFor(() => { expect(result.current.state).toEqual({ count: 5 }) })
@@ -48,7 +48,7 @@ describe('useBaseStore', () => {
     const { result } = renderHook(() => useBaseStore({ user: { name: 'Alice', details: { age: 30 } } }))
 
     act(() => {
-      result.current.updateState((state) => ({ user: { ...state.user, details: { ...state.user.details, age: 31 } } }))
+      result.current.updateState({ user: { ...result.current.state.user, details: { ...result.current.state.user.details, age: 31 } } })
     })
 
     await waitFor(() => { expect(result.current.state).toEqual({ user: { name: 'Alice', details: { age: 31 } } }) })
@@ -58,15 +58,15 @@ describe('useBaseStore', () => {
     const { result } = renderHook(() => useBaseStore({ user: { name: 'Alice', details: { age: 30 } } }))
 
     act(() => {
-      result.current.updateState((prevState) => ({
+      result.current.updateState({
         user: {
-          ...prevState.user,
+          ...result.current.state.user,
           details: {
-            ...prevState.user.details,
-            age: prevState.user.details.age + 1,
+            ...result.current.state.user.details,
+            age: result.current.state.user.details.age + 1,
           },
         },
-      }))
+      })
     })
 
     await waitFor(() => { expect(result.current.state).toEqual({ user: { name: 'Alice', details: { age: 31 } } }) })
@@ -92,10 +92,10 @@ describe('useBaseStore', () => {
     const { result } = renderHook(() => useBaseStore({ count: 0 }, []))
 
     await act(async () => {
-      await result.current.updateState(async (prevState) => {
-        const increment = await Promise.resolve(5)
-        return { count: prevState.count + increment }
-      })
+      const increment = await Promise.resolve(5)
+      await result.current.updateState(
+        { count: result.current.state.count + increment }
+      )
     })
 
     await waitFor(() => { expect(result.current.state).toEqual({ count: 5 }) })
@@ -117,18 +117,19 @@ describe('useBaseStore', () => {
     const { result } = renderHook(() => useBaseStore({ user: { name: 'Alice', details: { age: 30 } } }))
 
     await act(async () => {
-      await result.current.updateState(async (prevState) => {
-        const newAge = await Promise.resolve(prevState.user.details.age + 1)
-        return {
+      const newAge = await Promise.resolve(result.current.state.user.details.age + 1)
+      await result.current.updateState(
+        {
+          ...result.current.state,
           user: {
-            ...prevState.user,
+            ...result.current.state.user,
             details: {
-              ...prevState.user.details,
+              ...result.current.state.user.details,
               age: newAge,
             },
           },
         }
-      })
+      )
     })
 
     await waitFor(() => { expect(result.current.state).toEqual({ user: { name: 'Alice', details: { age: 31 } } }) })
@@ -176,15 +177,15 @@ describe('useBaseStore', () => {
     )
   
     act(() => {
-      result.current.updateState((state) => ({
+      result.current.updateState({
         user: {
-          ...state.user,
+          ...result.current.state.user,
           details: {
-            ...state.user.details,
+            ...result.current.state.user.details,
             age: 31
           }
         }
-      }))
+      })
     })
   
     await waitFor(() => { expect(result.current.state).toEqual({

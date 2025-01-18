@@ -1,6 +1,5 @@
 import { useState, useRef } from "react"
 import { Middleware } from "./types"
-import { DeepPartial } from "@/utils/deepType"
 
 type Listener<State> = (state: State) => void
 
@@ -43,13 +42,8 @@ export const useBaseStore = <State>(
   }
 
   const updateState = async (
-    updater: DeepPartial<State> | ((state: State) => Promise<State> | State)
+    nextState: State
   ) => {
-    const nextState =
-      typeof updater === "function"
-        ? await Promise.resolve(updater(state))
-        : { ...state, ...updater }
-
     runMiddlewares(state, nextState, (finalState) => {
       setState(finalState)
       notifyListeners(finalState)
